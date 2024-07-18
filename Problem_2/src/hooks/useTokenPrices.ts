@@ -61,7 +61,15 @@ const UseTokenPrices = () => {
     }
   };
 
-  return { loading, tokens, options, values, setValues, handleSetValue, handleFindToken };
+  const swapCurrencies = () => {
+    setValues((prevValues) => ({
+      ...prevValues,
+      fromCurrency: values.toCurrency,
+      toCurrency: values.fromCurrency,
+    }));
+  };
+
+  return { loading, tokens, options, values, setValues, handleSetValue, handleFindToken, swapCurrencies };
 };
 
 export default UseTokenPrices;

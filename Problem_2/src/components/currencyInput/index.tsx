@@ -20,7 +20,7 @@ const CurrencyInput: React.FC<CurrencyInputProps> = ({ name, label, value, onCha
         value={value}
         onChange={onChange}
         required
-        className="w-full p-2 border text-gray-700 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mt-1"
+        className="w-full p-2 border text-gray-700 shadow-sky-500 rounded-md shadow-sm focus:outline-none focus:ring-1 focus:ring-blue-500 mt-1"
       />
     </div>
   );

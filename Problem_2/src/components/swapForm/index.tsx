@@ -7,7 +7,7 @@ import CurrencyInput from "@src/components/currencyInput";
 import CurrencyDropDown from "@src/components/currencyDrop";
 
 const SwapForm: React.FC = () => {
-  const { options, loading, values, handleSetValue } = UseTokenPrices();
+  const { options, loading, values, handleSetValue, swapCurrencies } = UseTokenPrices();
 
   if (loading) {
     return <Loader />;
@@ -33,7 +33,7 @@ const SwapForm: React.FC = () => {
         <div className="flex justify-center mb-5">
           <button
             type="button"
-            onClick={() => { }}
+            onClick={swapCurrencies}
             className="p-2 bg-gray-200 rounded-full cursor-pointer hover:bg-gray-300"
           >
             <HiArrowsRightLeft className="text-xl text-gray-700" />
