@@ -13,6 +13,27 @@ const defaultValues: FormData = {
 const handleFindToken = (tokens: IpropToken[], data: string) =>
   tokens.find((token) => token.currency === data);
 
+const updateValues = (
+  newValues: Partial<FormData>,
+  values: FormData,
+  tokens: IpropToken[]
+) => {
+  const updatedValues = {
+    ...values,
+    ...newValues,
+  };
+
+  const fromToken = handleFindToken(tokens, updatedValues.fromCurrency);
+  const toToken = handleFindToken(tokens, updatedValues.toCurrency);
+
+  if (fromToken && toToken && updatedValues.amount) {
+    const receive = updatedValues.amount * (toToken.price / fromToken.price);
+    updatedValues.receive = parseFloat(receive.toFixed(2));
+  }
+
+  return updatedValues;
+};
+
 const UseTokenPrices = () => {
   const [tokens, setTokens] = useState<IpropToken[]>([]);
   const [options, setOptions] = useState<string[]>([]);
@@ -38,38 +59,40 @@ const UseTokenPrices = () => {
     getTokenPrices();
   }, []);
 
-  const handleSetValue = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleSetValue = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
 
-    const newValues = {
-      ...values,
-      [name]: value,
+    let updatedValues: Partial<FormData> = {
+      [name]: name === "amount" ? parseFloat(value) : value,
     };
 
-    if (name === "amount") {
-      newValues[name] = parseFloat(value);
-    }
-
-    const fromToken = handleFindToken(tokens, newValues.fromCurrency);
-    const toToken = handleFindToken(tokens, newValues.toCurrency);
-
-    if (fromToken && toToken && newValues.amount) {
-      const receive = Number(newValues.amount) * (toToken.price / fromToken.price);
-      setValues({ ...newValues, receive });
-    } else {
-      setValues(newValues);
-    }
+    setValues(updateValues(updatedValues, values, tokens));
   };
 
   const swapCurrencies = () => {
-    setValues((prevValues) => ({
-      ...prevValues,
-      fromCurrency: values.toCurrency,
-      toCurrency: values.fromCurrency,
-    }));
+    setValues((prevValues) => {
+      const updatedValues = {
+        ...prevValues,
+        fromCurrency: prevValues.toCurrency,
+        toCurrency: prevValues.fromCurrency,
+      };
+
+      return updateValues(updatedValues, values, tokens);
+    });
   };
 
-  return { loading, tokens, options, values, setValues, handleSetValue, handleFindToken, swapCurrencies };
+  return {
+    loading,
+    tokens,
+    options,
+    values,
+    setValues,
+    handleSetValue,
+    handleFindToken,
+    swapCurrencies,
+  };
 };
 
 export default UseTokenPrices;
